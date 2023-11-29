@@ -1,10 +1,16 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+
 namespace DesafioFundamentos.Models
 {
     public class Estacionamento
     {
         private decimal precoInicial = 0;
         private decimal precoPorHora = 0;
-        private List<string> veiculos = new List<string>();
+        private Dictionary<string, DateTime> veiculosEntrada = new Dictionary<string, DateTime>();
+        private Regex placaRegex = new Regex(@"^[A-Z]{3}\d{4}$|^[A-Z]{3}\d[A-Z]\d{2}$");
 
         public Estacionamento(decimal precoInicial, decimal precoPorHora)
         {
@@ -14,34 +20,42 @@ namespace DesafioFundamentos.Models
 
         public void AdicionarVeiculo()
         {
-            // TODO: Pedir para o usuário digitar uma placa (ReadLine) e adicionar na lista "veiculos"
-            // *IMPLEMENTE AQUI*
             Console.WriteLine("Digite a placa do veículo para estacionar:");
+            string placa = Console.ReadLine().ToUpper();
+
+            if (placaRegex.IsMatch(placa))
+            {
+                veiculosEntrada[placa] = DateTime.Now;
+                Console.WriteLine($"Veículo com placa {placa} adicionado ao estacionamento em {veiculosEntrada[placa]}.");
+            }
+            else
+            {
+                Console.WriteLine("Placa inválida. A placa deve seguir o formato ABC1234 ou ABC1A23. Tente novamente.");
+            }
         }
 
         public void RemoverVeiculo()
         {
             Console.WriteLine("Digite a placa do veículo para remover:");
+            string placa = Console.ReadLine().ToUpper();
 
-            // Pedir para o usuário digitar a placa e armazenar na variável placa
-            // *IMPLEMENTE AQUI*
-            string placa = "";
-
-            // Verifica se o veículo existe
-            if (veiculos.Any(x => x.ToUpper() == placa.ToUpper()))
+            if (veiculosEntrada.ContainsKey(placa))
             {
-                Console.WriteLine("Digite a quantidade de horas que o veículo permaneceu estacionado:");
+                DateTime entrada = veiculosEntrada[placa];
 
-                // TODO: Pedir para o usuário digitar a quantidade de horas que o veículo permaneceu estacionado,
-                // TODO: Realizar o seguinte cálculo: "precoInicial + precoPorHora * horas" para a variável valorTotal                
-                // *IMPLEMENTE AQUI*
-                int horas = 0;
-                decimal valorTotal = 0; 
+                Console.WriteLine($"Digite a quantidade de horas que o veículo permaneceu estacionado (horário de entrada: {entrada}):");
+                if (int.TryParse(Console.ReadLine(), out int horas))
+                {
+                    decimal valorTotal = precoInicial + precoPorHora * horas;
 
-                // TODO: Remover a placa digitada da lista de veículos
-                // *IMPLEMENTE AQUI*
+                    veiculosEntrada.Remove(placa);
 
-                Console.WriteLine($"O veículo {placa} foi removido e o preço total foi de: R$ {valorTotal}");
+                    Console.WriteLine($"O veículo {placa} entrou em {entrada} e foi removido. O preço total foi de: R$ {valorTotal}");
+                }
+                else
+                {
+                    Console.WriteLine("Valor inválido para horas.");
+                }
             }
             else
             {
@@ -51,12 +65,13 @@ namespace DesafioFundamentos.Models
 
         public void ListarVeiculos()
         {
-            // Verifica se há veículos no estacionamento
-            if (veiculos.Any())
+            if (veiculosEntrada.Any())
             {
                 Console.WriteLine("Os veículos estacionados são:");
-                // TODO: Realizar um laço de repetição, exibindo os veículos estacionados
-                // *IMPLEMENTE AQUI*
+                foreach (var veiculo in veiculosEntrada)
+                {
+                    Console.WriteLine($"Placa: {veiculo.Key}, Entrada: {veiculo.Value}");
+                }
             }
             else
             {
