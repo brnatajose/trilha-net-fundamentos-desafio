@@ -1,25 +1,43 @@
 ﻿using DesafioFundamentos.Models;
 
-// Coloca o encoding para UTF8 para exibir acentuação
 Console.OutputEncoding = System.Text.Encoding.UTF8;
 
-decimal precoInicial = 0;
-decimal precoPorHora = 0;
+decimal precoInicial, precoPorHora;
 
-Console.WriteLine("Seja bem vindo ao sistema de estacionamento!\n" +
-                  "Digite o preço inicial:");
-precoInicial = Convert.ToDecimal(Console.ReadLine());
+while (true)
+{
+    Console.WriteLine("Seja bem-vindo ao sistema de estacionamento!\nDigite o preço inicial:");
 
-Console.WriteLine("Agora digite o preço por hora:");
-precoPorHora = Convert.ToDecimal(Console.ReadLine());
+    if (decimal.TryParse(Console.ReadLine(), out precoInicial))
+    {
+        break;
+    }
+    else
+    {
+        Console.WriteLine("Valor inválido. Por favor, digite um número válido e pressione Enter.");
+        Console.ReadLine();
+    }
+}
 
-// Instancia a classe Estacionamento, já com os valores obtidos anteriormente
+while (true)
+{
+    Console.WriteLine("Agora digite o preço por hora:");
+
+    if (decimal.TryParse(Console.ReadLine(), out precoPorHora))
+    {
+        break;
+    }
+    else
+    {
+        Console.WriteLine("Valor inválido. Por favor, digite um número válido e pressione Enter.");
+        Console.ReadLine();
+    }
+}
+
 Estacionamento es = new Estacionamento(precoInicial, precoPorHora);
 
-string opcao = string.Empty;
 bool exibirMenu = true;
 
-// Realiza o loop do menu
 while (exibirMenu)
 {
     Console.Clear();
@@ -29,7 +47,9 @@ while (exibirMenu)
     Console.WriteLine("3 - Listar veículos");
     Console.WriteLine("4 - Encerrar");
 
-    switch (Console.ReadLine())
+    var input = Console.ReadLine();
+
+    switch (input)
     {
         case "1":
             es.AdicionarVeiculo();
@@ -52,8 +72,8 @@ while (exibirMenu)
             break;
     }
 
-    Console.WriteLine("Pressione uma tecla para continuar");
-    Console.ReadLine();
+    Console.WriteLine("\nPressione Enter para continuar");
+    Console.ReadLine(); 
 }
 
 Console.WriteLine("O programa se encerrou");
